@@ -12,7 +12,7 @@
 
 ***************************************************************************** */
 
-package mor1kx_pkg;
+package Mor1kx_pkg;
     /* ORBIS32 opcodes - top 6 bits */
 
     parameter int INSN_WIDTH = 32;
@@ -20,9 +20,7 @@ package mor1kx_pkg;
     parameter int IMM_WIDTH = 16;
 
 
-    parameter int ALU_OPC_WIDTH = 4;
-    typedef logic [ALU_OPC_WIDTH-1:0] alu_opc_t;
-
+    typedef logic [3:0] alu_opc_t;
     typedef enum alu_opc_t {ALU_OPC_ADD   = 'h0,
                             ALU_OPC_ADDC  = 'h1,
                             ALU_OPC_SUB   = 'h2,
@@ -40,17 +38,13 @@ package mor1kx_pkg;
                             ALU_OPC_CMOV  = 'he,
                             ALU_OPC_FFL1  = 'hf} alu_opcodes_t;
 
-    parameter int ALU_OPC_SECONDARY_WIDTH = 3;
-    typedef logic [ALU_OPC_WIDTH-1:0] alu_opc_secondary_t;
-
+    typedef logic [2:0] alu_opc_secondary_t;
     typedef enum alu_opc_secondary_t {ALU_OPC_SECONDARY_SHRT_SLL = 'h0,
                                       ALU_OPC_SECONDARY_SHRT_SRL = 'h1,
                                       ALU_OPC_SECONDARY_SHRT_SRA = 'h2,
                                       ALU_OPC_SECONDARY_SHRT_ROR = 'h3} alu_secondary_opcodes_t;
 
-    parameter int COMP_OPC_WIDTH = 4;
-    typedef logic [COMP_OPC_WIDTH-1:0] comp_opc_t;
-
+    typedef logic [3:0] comp_opc_t;
     typedef enum comp_opc_t {COMP_OPC_EQ  = 'h0,
                              COMP_OPC_NE  = 'h1,
                              COMP_OPC_GTU = 'h2,
@@ -62,18 +56,14 @@ package mor1kx_pkg;
                              COMP_OPC_LTS = 'hc,
                              COMP_OPC_LES = 'hd} comp_opcodes_t;
 
-    parameter int SYSTRAPSYNC_OPC_WIDTH = 3;
-    typedef logic [SYSTRAPSYNC_OPC_WIDTH-1:0] systrapsync_opc_t;
-
+    typedef logic [2:0] systrapsync_opc_t;
     typedef enum systrapsync_opc_t {SYSTRAPSYNC_OPC_SYSCALL = 'h0,
                                     SYSTRAPSYNC_OPC_TRAP    = 'h2,
                                     SYSTRAPSYNC_OPC_MSYNC   = 'h4,
                                     SYSTRAPSYNC_OPC_PSYNC   = 'h5,
                                     SYSTRAPSYNC_OPC_CSYNC   = 'h6} systrapsync_opcodes_t;
 
-    parameter int OPCODE_WIDTH = 6;
-    typedef logic [OPCODE_WIDTH-1:0] opc_t;
-
+    typedef logic [5:0] opc_t;
     typedef enum opc_t {OPCODE_J           = {2'b00, 4'h0},
                         OPCODE_JAL         = {2'b00, 4'h1},
                         OPCODE_BNF         = {2'b00, 4'h3},
@@ -201,8 +191,7 @@ package mor1kx_pkg;
                         OPCODE_FPU  = {2'b11, 4'h2}} opcodes_t;
 // FP OPs
 // MSbit indicates FPU operation valid
-    parameter int FPUOP_WIDTH = 8;
-    typedef logic [FPUOP_WIDTH-1:0] fpuop_t;
+    typedef logic [7:0] fpuop_t;
 
 // FPU unit from Usselman takes 5 cycles from decode, so 4 ex. cycles
     parameter int FPUOP_CYCLES = 3'd4;
@@ -226,15 +215,8 @@ package mor1kx_pkg;
                           FPCOP_SFLE     = 8'b0000_1101} fpu_opcodes_t;
 
 
-//
-// OR1K SPR defines
-//
-`include "mor1kx-sprs.v"
-
 /* Exception addresses */
-    parameter int EXCEPTION_ADDRESS_WIDTH = 5;
-    typedef logic [EXCEPTION_ADDRESS_WIDTH-1:0] exception_adr_t;
-
+    typedef logic [4:0] exception_adr_t;
     typedef enum exception_adr_t {RESET_VECTOR   = 5'h01,
                                   BERR_VECTOR    = 5'h02,
                                   DPF_VECTOR     = 5'h03,

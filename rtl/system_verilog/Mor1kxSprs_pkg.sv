@@ -12,7 +12,7 @@
 
 ***************************************************************************** */
 
-package mor1kx_sprs_pkg;
+package Mor1kxSprs_pkg;
 
 typedef enum int {SPR_SYS_BASE       = {5'd0},
                   SPR_VR_ADDR        = {5'd0,11'd0},
@@ -129,30 +129,29 @@ typedef enum int {SPR_SYS_BASE       = {5'd0},
 
                   SPR_FPU_BASE       = {5'd11}} spr_addresses_t;
 
-
     typedef struct packed {
-        logic [3:0]  cid;  /* Context ID */
+        logic [3:0]  context_id;
         logic [10:0] reserved;
-        logic      sumra; /* SPR user read mode access */
-        logic      fo;    /* Fixed to one */
-        logic      eph;   /* Exception prefix high */
-        logic      dsx;   /* Delay slot exception */
-        logic      ove;   /* Overflow exception enable */
-        logic      ov;    /* Overflow flag */
-        logic      cy;    /* Carry flag */
-        logic      f;     /* Flag */
-        logic      ce;    /* CID enable */
-        logic      lee;   /* Little-endian enable */
-        logic      ime;   /* Instruction MMU enable */
-        logic      dme;   /* Data MMU enable */
-        logic      ice;   /* Instruction cache enable */
-        logic      dce;   /* Data cache enable */
-        logic      iee;   /* Interrupt exception enable */
-        logic      tee;   /* Timer exception enable */
-        logic      sm;    /* Supervisor mode */
+        logic        user_mode_read_access;
+        logic        always_set;
+        logic        exception_prefix;
+        logic        delay_slot_exception;
+        logic        overflow_exception_enable;
+        logic        overflow_flag;
+        logic        carry_flag;
+        logic        flag;
+        logic        cid_enable;
+        logic        little_endian_enable;
+        logic        instruction_mmu_enable;
+        logic        data_mmu_enable;
+        logic        instruction_cache_enable;
+        logic        data_cache_enable;
+        logic        interrupt_exception_enable;
+        logic        timer_exception_enable;
+        logic        supervisor_mode;
     } supervision_t;
 
-// Version register - DEPRECATED
+    // DEPRECATED
     typedef struct packed {
         logic [7:0] ver;
         logic [7:0] cfg; /* Configuration Template */
@@ -161,21 +160,176 @@ typedef enum int {SPR_SYS_BASE       = {5'd0},
         logic [5:0] rev;    /* Revision */
     } version_t;
 
-// Unit Present register
     typedef struct packed {
-        logic [7:0]  cup;
+        logic [7:0]  custom_unit;
         logic [12:0] reserved;
-        logic        ttp;
-        logic        pmp;
-        logic        picp;
-        logic        pcup;
-        logic        dup;
-        logic        mp;
-        logic        imp;
-        logic        dmp;
-        logic        icp;
-        logic        dcp;
-        logic        up;
+        logic        tick_timer;
+        logic        power_management;
+        logic        programmable_interrupt_controller;
+        logic        performance_counters;
+        logic        debug_unit;
+        logic        mac;
+        logic        instruction_mmu;
+        logic        data_mmu;
+        logic        instruction_cache;
+        logic        data_cache;
+        logic        upr;
     } unit_present_t;
 
+    typedef struct packed {
+        logic [16:0] reserved; /* Arith. exception regs */
+        logic        aecsrp;   /* Implementation specific regs */
+        logic        isrp;     /* Exception vector base addr reg */
+        logic        evbarp;   /* Arch. version registers */
+        logic        avrp;     /* No delay-slot implementation */
+        logic        nd;
+        logic        ov64s;
+        logic        of64s;
+        logic        of32s;
+        logic        ob64s;
+        logic        ob32s;
+        logic        cfg;      /* Number of shadow GPRs */
+        logic [3:0]  nsgf;
+    } cpu_configuration_t;
+
+    typedef struct packed {
+        logic [7:0]  cpuid;
+        logic [23:0] ver;
+    } version_register2_t;
+
+    typedef struct packed {
+        logic [7:0] maj;
+        logic [7:0] min;
+        logic [7:0] rev;
+        logic [7:0] reserved;
+    } architecture_version_t;
+
+    typedef struct packed {
+        logic [18:0] evba;
+        logic [12:0] reserved;
+    } exception_vector_bar_t;
+
+    typedef struct packed {
+        logic [24:0] reserved;
+        logic ovmacadde;
+        logic cymacadde;
+        logic dbze;
+        logic ovmule;
+        logic cymule;
+        logic ovadde;
+        logic cyadde;
+    } airthmetic_exception_t;
+
+    typedef enum bit [1:0] {TTMR_M_DISABLED      = 2'b00,
+                            TTMR_M_RESTART       = 2'b01,
+                            TTMR_M_STOP_ON_MATCH = 2'b10,
+                            TTMR_M_CONTINUE      = 2'b11} tick_timer_mode_t;
+
+    typedef struct packed {
+        tick_timer_mode_t m;
+        logic ie;    /* interrupt enable */
+        logic ip;    /* interrupt pending */
+        logic [27:0] tp;  /* time period */
+    } tick_timer_t;
+
+    typedef struct packed {
+        logic cbwbri;       /* Cache Block Write-Back Register Implemented */
+        logic cbfri;        /* Cache Block Flush Register Implemented */
+        logic cblri;        /* Cache Block Lock Register Implemented */
+        logic cbpri;        /* Cache Block Prefetch Register Implemented */
+        logic cbiri;        /* Cache Block Invalidate Register Implemented */
+        logic ccri;         /* Cache Control Register Implemented */
+        logic cws;          /* Cache Write Strategy */
+        logic cbs;          /* Cache Block Size */
+        logic [3:0] ncs;    /* Number of Cache Sets */
+        logic [2:0] ncw;    /* Number of Cache Ways */
+    } data_cache_cfg_t;
+
+    typedef struct packed {
+        logic cblri;     /* Cache Block Lock Register Implemented */
+        logic cbpri;     /* Cache Block Prefetch Register Implemented */
+        logic cbiri;     /* Cache Block Invalidate Register Implemented */
+        logic ccri;      /* Cache Control Register Implemented */
+        logic cbs;       /* Cache Block Size */
+        logic [3:0] ncs; /* Number of Cache Sets */
+        logic [2:0] ncw; /* Number of Cache Ways */
+    } instruction_cache_cfg_t;
+
+    typedef struct packed {
+        logic htr;       /* Hardware TLB Reload */
+        logic teiri;     /* TLB Entry Invalidate Register Implemented */
+        logic pri;       /* Protection Register Implemented */
+        logic cri;       /* Control Register Implemented */
+        logic [2:0] nae; /* Number of ATB entries */
+        logic [2:0] nts; /* Number of TLB sets */
+        logic [1:0] ntw; /* Number of TLB ways */
+    } mmu_cfg_t;
+
+    typedef logic [1:0] chain_watchpoint_t;
+    typedef struct packed {
+        logic       ete;
+        logic       dxfw;
+        logic       bt;
+        logic       st;
+        chain_watchpoint_t [10:0] cw;
+    } debug_mode1_t;
+
+    typedef struct packed {
+        logic te;
+        logic fpe;
+        logic sce;
+        logic re;
+        logic ime;
+        logic dme;
+        logic inte;
+        logic iie;
+        logic ae;
+        logic tte;
+        logic ipfe;
+        logic dpfe;
+        logic busee;
+        logic rste;
+    } debug_t;
+
+    typedef struct packed {
+        logic       dzf;
+        logic       inf;
+        logic       ivf;
+        logic       ixf;
+        logic       zf;
+        logic       qnf;
+        logic       snf;
+        logic       unf;
+        logic       ovf;
+    } fpcsr_flags_t;
+
+    typedef struct packed {
+        fpcsr_flags_t flags_mask;
+        fpcsr_flags_t flags;
+        logic [1:0] rm;
+        logic       fpee;
+    } fpcsr_t;
+
+    typedef struct packed {
+        logic [5:0] reserved;
+        logic [5:0] wpe;
+        logic dds;
+        logic itlbm;
+        logic dtlbm;
+        logic bs;
+        logic lsus;
+        logic ifs;
+        logic icm;
+        logic dcm;
+        logic if;
+        logic sa;
+        logic la;
+        logic cium;
+        logic cism;
+        logic reserved;
+        logic cp;
+    } perfomance_counter_mode_t;
+
+    parameter int sr_width = 16;
+    parameter bit [sr_width-1:0] sr_reset_value = sr_width'('h8001);
 endpackage
