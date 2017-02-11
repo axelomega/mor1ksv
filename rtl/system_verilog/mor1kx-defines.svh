@@ -1,0 +1,26 @@
+`ifndef MOR1KX_DEFINES_SVH
+    `define MOR1KX_DEFINES_SVH
+
+    `define OR1K_RD_SELECT 25:21
+    `define OR1K_RA_SELECT 20:16
+    `define OR1K_RB_SELECT 15:11
+
+    `define IMM_SELECT 15:0
+
+    `define OR1K_ALU_OPC_SELECT 3:0
+
+    `define OR1K_ALU_OPC_SECONDARY_SELECT 8:6
+
+    `define OR1K_COMP_OPC_SELECT 24:21
+
+    `define OR1K_JUMPBRANCH_IMMEDIATE_SELECT 25:0
+
+    `define OR1K_SYSTRAPSYNC_OPC_SELECT 25:23
+
+    `define OR1K_OPCODE_SELECT 31:26
+
+    `define OR1K_FPUOP_SELECT 7:0
+
+    `define OR_ASYNC_RST
+
+`endif
